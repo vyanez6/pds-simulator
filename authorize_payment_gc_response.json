@@ -1,0 +1,35 @@
+{
+  "Response": {
+    "OriginalDateTime": "2024-07-21T23:59:59",
+    "AccountInformation": null,
+    "ServiceCode": null,
+    "CustomerName": null,
+    "AccountType": 0,
+    "EMVData": null,
+    "AuthorizationNumber": "2000000000 ",
+    "SignatureRequired": 0,
+    "CCRN": "OANP40172968930",
+    "BIN": "",
+    "Last4": "",
+    "Amount": 0.01,
+    "Balance": 2000.0,
+    "CaptureMethod": 2,
+    "POSCaptureMethod": 2,
+    "CardType": 3,
+    "TenderType": 7,
+    "CashBackAmount": 0.0,
+    "FeeAmount": 0.0,
+    "IsReversalRequired": false,
+    "MerchantId": "123456",
+    "ResponseCode": 48,
+    "ReceiptInformation": null,
+    "EmvTags": null,
+    "Id": 0,
+    "RequestState": 0
+  },
+  "ResponseSummary": {
+    "Message": "Success",
+    "ResponseCode": "OK"
+  },
+  "Error": null
+}

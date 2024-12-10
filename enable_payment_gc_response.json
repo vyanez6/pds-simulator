@@ -1,0 +1,51 @@
+{
+  "Response": {
+    "OriginalDateTime": "2024-07-21T23:59:59",
+    "AccountInformation": {
+      "AccountNumber": "6006492099999832619",
+      "BINNumber": "600649",
+      "Last4": "2619",
+      "ExpiryDate": "2072-06-30T00:00:00",
+      "ExpiryDateYY": "72",
+      "ExpiryDateMM": "06",
+      "SequenceNumber": null,
+      "PINData": null
+    },
+    "ServiceCode": "110",
+    "CustomerName": {
+      "Title": null,
+      "FirstName": "JCPNY",
+      "MiddleInitial": null,
+      "Suffix": null,
+      "Surname": null
+    },
+    "AccountType": 0,
+    "EMVData": null,
+    "AuthorizationNumber": "01000000",
+    "SignatureRequired": 1,
+    "Track1Data": "********************JCPNY*******",
+    "Track2Data": "6006492099999832619=7206110",
+    "Track4Data": "6006492099999832619=7206110",
+    "Amount": 0.00,
+    "Balance": 100.0,
+    "CaptureMethod": 3,
+    "POSCaptureMethod": 3,
+    "CardType": 3,
+    "TenderType": 7,
+    "CashBackAmount": 0.0,
+    "FeeAmount": 0.0,
+    "IsReversalRequired": false,
+    "ReferenceValue": null,
+    "MerchantId": "123456",
+    "ResponseCode": 48,
+    "ReceiptInformation": null,
+    "EmvTags": null,
+    "Id": 0,
+    "RequestState": 0
+  },
+  "ResponseSummary": {
+    "Message": "Success",
+    "ResponseCode": "OK"
+  },
+  "Error": null
+}
