@@ -22,6 +22,28 @@ def open_response(response_to_load):
     return response
 
 
+def gc_balance():
+    print("\nGift Card Balance Inquiry\n")
+    balance = float(input("Enter initial GC balance: "))
+    return None, balance
+
+
+def gc_load(body):
+    print("\nSimulating Gift Card Load\n")
+    amount = float(body["Amount"]) if "Amount" in body else 0.0
+    balance = float(input(f"Enter initial GC balance (requested amount {amount}): "))
+    balance = balance + amount
+    return amount, balance
+
+
+def update_response(response, balance, amount):
+    if balance is not None and "Response" in response and "Balance" in response["Response"]:
+        response["Response"]["Balance"] = balance
+
+    if amount is not None and "Response" in response and "Amount" in response["Response"]:
+        response["Response"]["Amount"] = amount
+
+
 @app.post("/PaymentDeviceService/api/v1/Payment/AuthorizePayment")
 def authorize_payment():
     print()
@@ -36,13 +58,9 @@ def authorize_payment():
         "PaymentTenderType"] == "gift" and "ProcessCode" in body:
         response_to_load = "authorize_payment_gc_response.json"
         if body["ProcessCode"] == "BalanceInquiry":
-            print("\nGift Card Balance Inquiry\n")
-            balance = float(input("Enter initial GC balance: "))
+            amount, balance = gc_balance()
         elif body["ProcessCode"] == "AddValue":
-            print("\nSimulating Gift Card Load\n")
-            balance = float(input("Enter initial GC balance: "))
-            amount = float(body["Amount"]) if "Amount" in body else 0.0
-            balance = balance + amount
+            amount, balance = gc_load(body)
 
     if response_to_load is None:
         abort(404)
@@ -50,15 +68,21 @@ def authorize_payment():
 
     response = open_response(response_to_load)
 
-    if balance is not None and "Response" in response and "Balance" in response["Response"]:
-        response["Response"]["Balance"] = balance
-
-    if amount is not None and "Response" in response and "Amount" in response["Response"]:
-        response["Response"]["Amount"] = amount
+    update_response(response, balance, amount)
 
     print(">>>", response)
 
     return response
+
+
+enable_payment_responses = {
+    "DUAL": "enable_payment_cc_response.json",
+    "PLCC": "enable_payment_cc_response.json",
+    "GC": "enable_payment_gc_response.json",
+    "POA": "enable_payment_poa_plcc_response.json",
+    "MRV": "enable_payment_mrv_return_response.json",
+    "Error": ""
+}
 
 
 @app.post("/PaymentDeviceService/api/v1/Payment/EnablePayment")
@@ -68,23 +92,25 @@ def enable_payment():
     body = request.get_json()
     print("<<<", body)
     print("Select an option:")
-    response_types = ["DUAL", "PLCC", "Error", "GC"]
+    response_types = list(enable_payment_responses.keys())
     for index, value in enumerate(response_types):
         print("   ", index, value)
     input_message = f"Enter selection to send card data [0-{len(response_types) - 1}]: "
     input_data = input(input_message)
-    response_to_load = None
-    if input_data == "3":
-        # Gift card response
-        response_to_load = "enable_payment_gc_response.json"
-    elif input_data == "2":
+    input_data = int(input_data)
+
+    if response_types[input_data] == "Error":
         # fail the request... In theory these come from PDS as 200 with error inside
         abort(500)
-    else:
-        # Any of the credit card responses
-        response_to_load = "enable_payment_cc_response.json"
 
+    amount = None
+    balance = None
+    if response_types[input_data] == "MRV":
+        amount, balance = gc_load(body)
+
+    response_to_load = enable_payment_responses[response_types[input_data]]
     response = open_response(response_to_load)
+    update_response(response, balance, amount)
     print(">>>", response)
     return response
 

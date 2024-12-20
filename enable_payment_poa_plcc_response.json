@@ -1,0 +1,51 @@
+{
+  "Response": {
+    "OriginalDateTime": "2024-12-05T16:11:09",
+    "AccountInformation": {
+      "AccountNumber": "9999990000007241",
+      "BINNumber": "999999",
+      "Last4": "7241",
+      "ExpiryDate": "2049-12-31T00:00:00",
+      "ExpiryDateYY": "49",
+      "ExpiryDateMM": "12",
+      "SequenceNumber": null,
+      "PINData": null
+    },
+    "ServiceCode": "701",
+    "CustomerName": {
+      "Title": null,
+      "FirstName": "TEST11",
+      "MiddleInitial": null,
+      "Suffix": null,
+      "Surname": "JCP PLCC"
+    },
+    "AccountType": 0,
+    "EMVData": null,
+    "AuthorizationNumber": "00",
+    "SignatureRequired": 1,
+    "CCRN": "5000068114",
+    "BIN": "999990",
+    "Last4": "7241",
+    "Amount": 0.0,
+    "Balance": 0.0,
+    "CaptureMethod": 4,
+    "POSCaptureMethod": 4,
+    "CardType": 5,
+    "TenderType": 6,
+    "CashBackAmount": 0.0,
+    "FeeAmount": 0.0,
+    "IsReversalRequired": false,
+    "MerchantId": "123456",
+    "ResponseCode": 48,
+    "ReceiptInformation": null,
+    "EmvTags": null,
+    "Id": 0,
+    "RequestState": 0
+  },
+  "ResponseSummary": {
+    "Message": "Success",
+    "ResponseCode": "OK"
+  },
+  "Error": null
+}
+ 
