@@ -1,0 +1,44 @@
+{
+  "Response": {
+    "OriginalDateTime": "2025-01-23T12:02:41",
+    "AccountInformation": {
+      "AccountNumber": "",
+      "BINNumber": null,
+      "Last4": null,
+      "ExpiryDate": "2044-08-31T00:00:00",
+      "ExpiryDateYY": null,
+      "ExpiryDateMM": null,
+      "SequenceNumber": null,
+      "PINData": null
+    },
+    "ServiceCode": null,
+    "CustomerName": null,
+    "AccountType": 0,
+    "EMVData": null,
+    "AuthorizationNumber": "02300200 ",
+    "SignatureRequired": 0,
+    "CCRN": "3000000000030179",
+    "BIN": "546680",
+    "Last4": "7963",
+    "Amount": 31.0,
+    "Balance": 0.0,
+    "CaptureMethod": 2,
+    "POSCaptureMethod": 2,
+    "CardType": 6,
+    "TenderType": 2,
+    "CashBackAmount": 0.0,
+    "FeeAmount": 0.0,
+    "IsReversalRequired": false,
+    "MerchantId": "123456",
+    "ResponseCode": 48,
+    "ReceiptInformation": null,
+    "EmvTags": null,
+    "Id": 0,
+    "RequestState": 0
+  },
+  "ResponseSummary": {
+    "Message": "Success",
+    "ResponseCode": "OK"
+  },
+  "Error": null
+}

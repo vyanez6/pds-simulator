@@ -31,9 +31,30 @@ def gc_balance():
 def gc_load(body):
     print("\nSimulating Gift Card Load\n")
     amount = float(body["Amount"]) if "Amount" in body else 0.0
-    balance = float(input(f"Enter initial GC balance (requested amount {amount}): "))
+    balance = input(f"Enter initial GC balance (requested amount {amount} - enter to use this amount): ")
+    if len(balance) == 0:
+        balance = 0.0
+    else:
+        balance = float(balance)
     balance = balance + amount
     return amount, balance
+
+
+def tender(body):
+    print("\nSimulating Tender\n")
+    amount = float(body["Amount"]) if "Amount" in body else 0.0
+    tender = input(f"Enter tender amount (requested amount {amount} - enter to use this amount): ")
+    if len(tender) == 0:
+        tender = amount
+    else:
+        tender = float(tender)
+    return tender, 0.0
+
+
+def poa_posting(body):
+    print("\nSimulating POA Posting\n")
+    amount = float(body["Amount"]) if "Amount" in body else 0.0
+    return amount, 0.0
 
 
 def update_response(response, balance, amount):
@@ -54,13 +75,16 @@ def authorize_payment():
     balance = None
     amount = None
     response_to_load = None
-    if "PaymentTenderType" in body and body[
-        "PaymentTenderType"] == "gift" and "ProcessCode" in body:
-        response_to_load = "authorize_payment_gc_response.json"
-        if body["ProcessCode"] == "BalanceInquiry":
-            amount, balance = gc_balance()
-        elif body["ProcessCode"] == "AddValue":
-            amount, balance = gc_load(body)
+    if "PaymentTenderType" in body:
+        if body["PaymentTenderType"] == "gift" and "ProcessCode" in body:
+            response_to_load = "authorize_payment_gc_response.json"
+            if body["ProcessCode"] == "BalanceInquiry":
+                amount, balance = gc_balance()
+            elif body["ProcessCode"] == "AddValue":
+                amount, balance = gc_load(body)
+        elif body["PaymentTenderType"] == "credit" and "ProcessCode" in body and body["ProcessCode"] == "JCPPaymentExchangeOut":
+            response_to_load = "authorize_payment_poa_posting.json"
+            amount, balance = poa_posting(body)
 
     if response_to_load is None:
         abort(404)
@@ -76,11 +100,13 @@ def authorize_payment():
 
 
 enable_payment_responses = {
-    "DUAL": "enable_payment_cc_response.json",
-    "PLCC": "enable_payment_cc_response.json",
-    "GC": "enable_payment_gc_response.json",
-    "POA": "enable_payment_poa_plcc_response.json",
-    "MRV": "enable_payment_mrv_return_response.json",
+    "DUAL ICAPS ACCT INFO": "enable_payment_cc_response.json",
+    "PLCC ICAPS ACCT INFO": "enable_payment_cc_response.json",
+    "GC INQUIRY": "enable_payment_gc_response.json",
+    "POA PLCC SWIPE": "enable_payment_poa_plcc_response.json",
+    "POA DUAL SWIPE": "enable_payment_poa_dual_response.json",
+    "MRV LOAD": "enable_payment_mrv_return_response.json",
+    "DEBIT TENDER": "enable_payment_debit_tender_response.json",
     "Error": ""
 }
 
@@ -105,8 +131,10 @@ def enable_payment():
 
     amount = None
     balance = None
-    if response_types[input_data] == "MRV":
+    if response_types[input_data].startswith("MRV"):
         amount, balance = gc_load(body)
+    elif response_types[input_data].endswith("TENDER"):
+        amount, balance = tender(body)
 
     response_to_load = enable_payment_responses[response_types[input_data]]
     response = open_response(response_to_load)
