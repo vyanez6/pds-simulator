@@ -31,7 +31,8 @@ def gc_balance():
 def gc_load(body):
     print("\nSimulating Gift Card Load\n")
     amount = float(body["Amount"]) if "Amount" in body else 0.0
-    balance = input(f"Enter initial GC balance (requested amount {amount} - enter to use this amount): ")
+    balance = input(
+        f"Enter initial GC balance (requested amount {amount} - enter to use this amount): ")
     if len(balance) == 0:
         balance = 0.0
     else:
@@ -82,7 +83,8 @@ def authorize_payment():
                 amount, balance = gc_balance()
             elif body["ProcessCode"] == "AddValue":
                 amount, balance = gc_load(body)
-        elif body["PaymentTenderType"] == "credit" and "ProcessCode" in body and body["ProcessCode"] == "JCPPaymentExchangeOut":
+        elif body["PaymentTenderType"] == "credit" and "ProcessCode" in body and body[
+            "ProcessCode"] == "JCPPaymentExchangeOut":
             response_to_load = "authorize_payment_poa_posting.json"
             amount, balance = poa_posting(body)
 
@@ -249,4 +251,33 @@ def get_payment_devices():
         "ResponseSummary": {"Message": "Success", "ResponseCode": "OK"},
         "Error": None
     }
+    return response
+
+
+return_responses = {
+    "SUCCESS": "",
+    "NOT FOUND": "not_found_return_response.json",
+    "Error": "error_return_response.json"
+}
+
+
+@app.post("/POSReturnsDataService/api/v1/returnsdata/FindTransaction")
+def post_return_find_transaction():
+    print()
+    body = request.get_json()
+    print("<<<", body)
+    print("Select an option:")
+    response_types = list(return_responses.keys())
+    for index, value in enumerate(response_types):
+        print("   ", index, value)
+    input_message = f"Enter selection to send return response [0-{len(response_types) - 1}]: "
+    input_data = input(input_message)
+    input_data = int(input_data)
+
+    response_to_load = return_responses[response_types[input_data]]
+    if response_types[input_data] == 'SUCCESS':
+        response_to_load = f"{body['storeNum']}_{body['tranNum']}_{body['workstNum']}_return_response.json"
+
+    response = open_response(response_to_load)
+    print(">>>", response)
     return response
